@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/EcoLandParcels_4.js"></script>
+        <script src="data/HabitatSurveyPlantlife_5.js"></script>
+        <script src="data/PeatDepthcm_6.js"></script>
+        <script src="data/EstateBoundary_7.js"></script>
+        <script src="data/MammalTransectRoutes_8.js"></script>
+        <script src="data/MammalSigns_9.js"></script>
+        <script src="data/CameraTraps_10.js"></script>
+        <script src="data/Juniper_11.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:26, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_OpenTopoMap_0');
+        map.getPane('pane_OpenTopoMap_0').style.zIndex = 400;
+        var layer_OpenTopoMap_0 = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenTopoMap_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">Kartendaten: © OpenStreetMap-Mitwirkende, SRTM | Kartendarstellung: © OpenTopoMap (CC-BY-SA)</a>',
+            minZoom: 1,
+            maxZoom: 26,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_OpenTopoMap_0;
+        map.addLayer(layer_OpenTopoMap_0);
+        map.createPane('pane_Pleiades26thJune2019lowres_1');
+        map.getPane('pane_Pleiades26thJune2019lowres_1').style.zIndex = 401;
+        var img_Pleiades26thJune2019lowres_1 = 'data/Pleiades26thJune2019lowres_1.png';
+        var img_bounds_Pleiades26thJune2019lowres_1 = [[57.28265355779817,-4.502286441323108],[57.322545895741,-4.447080862293735]];
+        var layer_Pleiades26thJune2019lowres_1 = new L.imageOverlay(img_Pleiades26thJune2019lowres_1,
+                                              img_bounds_Pleiades26thJune2019lowres_1,
+                                              {pane: 'pane_Pleiades26thJune2019lowres_1'});
+        bounds_group.addLayer(layer_Pleiades26thJune2019lowres_1);
+        map.createPane('pane_PleiadesNDVI_2');
+        map.getPane('pane_PleiadesNDVI_2').style.zIndex = 402;
+        var img_PleiadesNDVI_2 = 'data/PleiadesNDVI_2.png';
+        var img_bounds_PleiadesNDVI_2 = [[57.282641411970225,-4.502289459672443],[57.32255775162398,-4.447074608006828]];
+        var layer_PleiadesNDVI_2 = new L.imageOverlay(img_PleiadesNDVI_2,
+                                              img_bounds_PleiadesNDVI_2,
+                                              {pane: 'pane_PleiadesNDVI_2'});
+        bounds_group.addLayer(layer_PleiadesNDVI_2);
+        map.createPane('pane_Pleiadesbasedhabitatclassification_3');
+        map.getPane('pane_Pleiadesbasedhabitatclassification_3').style.zIndex = 403;
+        var img_Pleiadesbasedhabitatclassification_3 = 'data/Pleiadesbasedhabitatclassification_3.png';
+        var img_bounds_Pleiadesbasedhabitatclassification_3 = [[57.28264676504494,-4.50228405925769],[57.32255201158449,-4.447074628767538]];
+        var layer_Pleiadesbasedhabitatclassification_3 = new L.imageOverlay(img_Pleiadesbasedhabitatclassification_3,
+                                              img_bounds_Pleiadesbasedhabitatclassification_3,
+                                              {pane: 'pane_Pleiadesbasedhabitatclassification_3'});
+        bounds_group.addLayer(layer_Pleiadesbasedhabitatclassification_3);
+        function pop_EcoLandParcels_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Eco ID</th>\
+                        <td>' + (feature.properties['eco_id'] !== null ? autolinker.link(feature.properties['eco_id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Broad Habitat</th>\
+                        <td>' + (feature.properties['eco_label'] !== null ? autolinker.link(feature.properties['eco_label'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area (ha)</th>\
+                        <td>' + (feature.properties['area_ha'] !== null ? autolinker.link(feature.properties['area_ha'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_EcoLandParcels_4_0() {
+            return {
+                pane: 'pane_EcoLandParcels_4',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_EcoLandParcels_4');
+        map.getPane('pane_EcoLandParcels_4').style.zIndex = 404;
+        map.getPane('pane_EcoLandParcels_4').style['mix-blend-mode'] = 'multiply';
+        var layer_EcoLandParcels_4 = new L.geoJson(json_EcoLandParcels_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_EcoLandParcels_4',
+            layerName: 'layer_EcoLandParcels_4',
+            pane: 'pane_EcoLandParcels_4',
+            onEachFeature: pop_EcoLandParcels_4,
+            style: style_EcoLandParcels_4_0,
+        });
+        bounds_group.addLayer(layer_EcoLandParcels_4);
+        map.addLayer(layer_EcoLandParcels_4);
+        function pop_HabitatSurveyPlantlife_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Habitat</th>\
+                        <td>' + (feature.properties['VEGETATION'] !== null ? autolinker.link(feature.properties['VEGETATION'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NVC Class</th>\
+                        <td>' + (feature.properties['NVC'] !== null ? autolinker.link(feature.properties['NVC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area (ha)</th>\
+                        <td>' + (feature.properties['Area (ha)'] !== null ? autolinker.link(feature.properties['Area (ha)'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Broad Habitat Type</th>\
+                        <td>' + (feature.properties['Broad Hab'] !== null ? autolinker.link(feature.properties['Broad Hab'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_HabitatSurveyPlantlife_5_0(feature) {
+            switch(String(feature.properties['Broad Hab'])) {
+                case 'Bracken dominated':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,80,0,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Broadleaved woodland':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,128,0,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Clear fell':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Coniferous woodland':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,234,141,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Dry heath':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,208,64,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Grassland':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,0,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Pasture woodland':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,0,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Peatland':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(144,0,144,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Plantation woodland':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Scrub':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Track':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(151,150,145,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Water':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,197,255,0.9)',
+                interactive: true,
+            }
+                    break;
+                case 'Wet heath':
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,208,64,0.9)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_HabitatSurveyPlantlife_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(32,223,99,0.9)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_HabitatSurveyPlantlife_5');
+        map.getPane('pane_HabitatSurveyPlantlife_5').style.zIndex = 405;
+        map.getPane('pane_HabitatSurveyPlantlife_5').style['mix-blend-mode'] = 'normal';
+        var layer_HabitatSurveyPlantlife_5 = new L.geoJson(json_HabitatSurveyPlantlife_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_HabitatSurveyPlantlife_5',
+            layerName: 'layer_HabitatSurveyPlantlife_5',
+            pane: 'pane_HabitatSurveyPlantlife_5',
+            onEachFeature: pop_HabitatSurveyPlantlife_5,
+            style: style_HabitatSurveyPlantlife_5_0,
+        });
+        bounds_group.addLayer(layer_HabitatSurveyPlantlife_5);
+        function pop_PeatDepthcm_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Gridref</th>\
+                        <td>' + (feature.properties['Gridref'] !== null ? autolinker.link(feature.properties['Gridref'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Peat Depth</strong><br />' + (feature.properties['Peat Depth'] !== null ? autolinker.link(feature.properties['Peat Depth'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PeatDepthcm_6_0(feature) {
+            if (feature.properties['Peat Depth'] >= 10.000000 && feature.properties['Peat Depth'] <= 50.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 1.0,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 50.000000 && feature.properties['Peat Depth'] <= 100.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 2.125,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 100.000000 && feature.properties['Peat Depth'] <= 150.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 3.25,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 150.000000 && feature.properties['Peat Depth'] <= 200.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 4.375,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 200.000000 && feature.properties['Peat Depth'] <= 250.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 5.5,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 250.000000 && feature.properties['Peat Depth'] <= 300.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 6.625,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 300.000000 && feature.properties['Peat Depth'] <= 350.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 7.75,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 350.000000 && feature.properties['Peat Depth'] <= 400.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 8.875,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Peat Depth'] >= 400.000000 && feature.properties['Peat Depth'] <= 420.000000 ) {
+                return {
+                pane: 'pane_PeatDepthcm_6',
+                radius: 10.0,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_PeatDepthcm_6');
+        map.getPane('pane_PeatDepthcm_6').style.zIndex = 406;
+        map.getPane('pane_PeatDepthcm_6').style['mix-blend-mode'] = 'normal';
+        var layer_PeatDepthcm_6 = new L.geoJson(json_PeatDepthcm_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PeatDepthcm_6',
+            layerName: 'layer_PeatDepthcm_6',
+            pane: 'pane_PeatDepthcm_6',
+            onEachFeature: pop_PeatDepthcm_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PeatDepthcm_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PeatDepthcm_6);
+        function pop_EstateBoundary_7(feature, layer) {
+        }
+
+        function style_EstateBoundary_7_0() {
+            return {
+                pane: 'pane_EstateBoundary_7',
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,0.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_EstateBoundary_7');
+        map.getPane('pane_EstateBoundary_7').style.zIndex = 407;
+        map.getPane('pane_EstateBoundary_7').style['mix-blend-mode'] = 'normal';
+        var layer_EstateBoundary_7 = new L.geoJson(json_EstateBoundary_7, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_EstateBoundary_7',
+            layerName: 'layer_EstateBoundary_7',
+            pane: 'pane_EstateBoundary_7',
+            onEachFeature: pop_EstateBoundary_7,
+            style: style_EstateBoundary_7_0,
+        });
+        bounds_group.addLayer(layer_EstateBoundary_7);
+        map.addLayer(layer_EstateBoundary_7);
+        function pop_MammalTransectRoutes_8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_MammalTransectRoutes_8_0(feature) {
+            switch(String(feature.properties['Name'])) {
+                case 'Mammal Transect Central':
+                    return {
+                pane: 'pane_MammalTransectRoutes_8',
+                opacity: 1,
+                color: 'rgba(255,127,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Mammal Transect North':
+                    return {
+                pane: 'pane_MammalTransectRoutes_8',
+                opacity: 1,
+                color: 'rgba(227,227,26,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Mammal Transect South':
+                    return {
+                pane: 'pane_MammalTransectRoutes_8',
+                opacity: 1,
+                color: 'rgba(56,191,240,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        function style_MammalTransectRoutes_8_1(feature) {
+            switch(String(feature.properties['Name'])) {
+                case 'Mammal Transect Central':
+                    return {
+                pane: 'pane_MammalTransectRoutes_8',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Mammal Transect North':
+                    return {
+                pane: 'pane_MammalTransectRoutes_8',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Mammal Transect South':
+                    return {
+                pane: 'pane_MammalTransectRoutes_8',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_MammalTransectRoutes_8');
+        map.getPane('pane_MammalTransectRoutes_8').style.zIndex = 408;
+        map.getPane('pane_MammalTransectRoutes_8').style['mix-blend-mode'] = 'normal';
+        var layer_MammalTransectRoutes_8 = new L.geoJson.multiStyle(json_MammalTransectRoutes_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MammalTransectRoutes_8',
+            layerName: 'layer_MammalTransectRoutes_8',
+            pane: 'pane_MammalTransectRoutes_8',
+            onEachFeature: pop_MammalTransectRoutes_8,
+            styles: [style_MammalTransectRoutes_8_0,style_MammalTransectRoutes_8_1,]
+        });
+        bounds_group.addLayer(layer_MammalTransectRoutes_8);
+        function pop_MammalSigns_9(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Date/Time</th>\
+                        <td>' + (feature.properties['Date_Time'] !== null ? autolinker.link(feature.properties['Date_Time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Species</th>\
+                        <td>' + (feature.properties['Species'] !== null ? autolinker.link(feature.properties['Species'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Feature</th>\
+                        <td>' + (feature.properties['Feature'] !== null ? autolinker.link(feature.properties['Feature'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_MammalSigns_9_0() {
+            return {
+                pane: 'pane_MammalSigns_9',
+                shape: 'diamond',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(139,139,139,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_MammalSigns_9');
+        map.getPane('pane_MammalSigns_9').style.zIndex = 409;
+        map.getPane('pane_MammalSigns_9').style['mix-blend-mode'] = 'normal';
+        var layer_MammalSigns_9 = new L.geoJson(json_MammalSigns_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MammalSigns_9',
+            layerName: 'layer_MammalSigns_9',
+            pane: 'pane_MammalSigns_9',
+            onEachFeature: pop_MammalSigns_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_MammalSigns_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_MammalSigns_9);
+        function pop_CameraTraps_10(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Camera ID</th>\
+                        <td>' + (feature.properties['Camera ID'] !== null ? autolinker.link(feature.properties['Camera ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td>' + (feature.properties['Location'] !== null ? autolinker.link(feature.properties['Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_CameraTraps_10_0() {
+            return {
+                pane: 'pane_CameraTraps_10',
+                shape: 'square',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CameraTraps_10');
+        map.getPane('pane_CameraTraps_10').style.zIndex = 410;
+        map.getPane('pane_CameraTraps_10').style['mix-blend-mode'] = 'normal';
+        var layer_CameraTraps_10 = new L.geoJson(json_CameraTraps_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CameraTraps_10',
+            layerName: 'layer_CameraTraps_10',
+            pane: 'pane_CameraTraps_10',
+            onEachFeature: pop_CameraTraps_10,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_CameraTraps_10_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_CameraTraps_10);
+        function pop_Juniper_11(feature, layer) {
+        }
+
+        function style_Juniper_11_0(feature) {
+            if (feature.properties['q2wHide_NO'] >= 1.000000 && feature.properties['q2wHide_NO'] <= 5.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 5.000000 && feature.properties['q2wHide_NO'] <= 10.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 3.5,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 10.000000 && feature.properties['q2wHide_NO'] <= 15.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 15.000000 && feature.properties['q2wHide_NO'] <= 20.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 6.5,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 20.000000 && feature.properties['q2wHide_NO'] <= 22.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        function style_Juniper_11_1(feature) {
+            if (feature.properties['q2wHide_NO'] >= 1.000000 && feature.properties['q2wHide_NO'] <= 5.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 0.90909,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 5.000000 && feature.properties['q2wHide_NO'] <= 10.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 1.59091,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 10.000000 && feature.properties['q2wHide_NO'] <= 15.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 2.27272,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 15.000000 && feature.properties['q2wHide_NO'] <= 20.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 2.95454,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['q2wHide_NO'] >= 20.000000 && feature.properties['q2wHide_NO'] <= 22.000000 ) {
+                return {
+                pane: 'pane_Juniper_11',
+                radius: 3.63636,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_Juniper_11');
+        map.getPane('pane_Juniper_11').style.zIndex = 411;
+        map.getPane('pane_Juniper_11').style['mix-blend-mode'] = 'normal';
+        var layer_Juniper_11 = new L.geoJson.multiStyle(json_Juniper_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Juniper_11',
+            layerName: 'layer_Juniper_11',
+            pane: 'pane_Juniper_11',
+            onEachFeature: pop_Juniper_11,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Juniper_11_0(feature));
+            },function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Juniper_11_1(feature));
+            },
+        ]});
+        bounds_group.addLayer(layer_Juniper_11);
+            var abstract = new L.Control({'position':'topright'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+
+                    abstract.show();
+                    return this._div;
+                };
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'Bunloit - Nature recovery and community prosperity through rewilding';
+            };
+            abstract.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Juniper<br /><table><tr><td style="text-align: center;"><img src="legend/Juniper_11_150.png" /></td><td>1 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/Juniper_11_5101.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/Juniper_11_10152.png" /></td><td>10 - 15</td></tr><tr><td style="text-align: center;"><img src="legend/Juniper_11_15203.png" /></td><td>15 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/Juniper_11_20224.png" /></td><td>20 - 22</td></tr></table>': layer_Juniper_11,'<img src="legend/CameraTraps_10.png" /> Camera Traps': layer_CameraTraps_10,'<img src="legend/MammalSigns_9.png" /> Mammal Signs': layer_MammalSigns_9,'Mammal Transect Routes<br /><table><tr><td style="text-align: center;"><img src="legend/MammalTransectRoutes_8_MammalTransectCentral0.png" /></td><td>Mammal Transect Central</td></tr><tr><td style="text-align: center;"><img src="legend/MammalTransectRoutes_8_MammalTransectNorth1.png" /></td><td>Mammal Transect North</td></tr><tr><td style="text-align: center;"><img src="legend/MammalTransectRoutes_8_MammalTransectSouth2.png" /></td><td>Mammal Transect South</td></tr></table>': layer_MammalTransectRoutes_8,'<img src="legend/EstateBoundary_7.png" /> Estate Boundary': layer_EstateBoundary_7,'Peat Depth (cm)<br /><table><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_10500.png" /></td><td>10 - 50</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_501001.png" /></td><td>50 - 100</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_1001502.png" /></td><td>100 - 150</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_1502003.png" /></td><td>150 - 200</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_2002504.png" /></td><td>200 - 250</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_2503005.png" /></td><td>250 - 300</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_3003506.png" /></td><td>300 - 350</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_3504007.png" /></td><td>350 - 400</td></tr><tr><td style="text-align: center;"><img src="legend/PeatDepthcm_6_4004208.png" /></td><td>400 - 420</td></tr></table>': layer_PeatDepthcm_6,'Habitat Survey (Plantlife)<br /><table><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Brackendominated0.png" /></td><td>Bracken dominated</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Broadleavedwoodland1.png" /></td><td>Broadleaved woodland</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Clearfell2.png" /></td><td>Clear fell</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Coniferouswoodland3.png" /></td><td>Coniferous woodland</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Dryheath4.png" /></td><td>Dry heath</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Grassland5.png" /></td><td>Grassland</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Pasturewoodland6.png" /></td><td>Pasture woodland</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Peatland7.png" /></td><td>Peatland</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Plantationwoodland8.png" /></td><td>Plantation woodland</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Scrub9.png" /></td><td>Scrub</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Track10.png" /></td><td>Track</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Water11.png" /></td><td>Water</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_Wetheath12.png" /></td><td>Wet heath</td></tr><tr><td style="text-align: center;"><img src="legend/HabitatSurveyPlantlife_5_13.png" /></td><td></td></tr></table>': layer_HabitatSurveyPlantlife_5,'<img src="legend/EcoLandParcels_4.png" /> Eco Land Parcels': layer_EcoLandParcels_4,"Pleiades based habitat classification": layer_Pleiadesbasedhabitatclassification_3,"Pleiades NDVI": layer_PleiadesNDVI_2,"Pleiades 26th June 2019 (low res)": layer_Pleiades26thJune2019lowres_1,"OpenTopoMap": layer_OpenTopoMap_0,}).addTo(map);
+        map.on("zoomend", function(){
+
+                if (map.hasLayer(layer_EcoLandParcels_4)) {
+                    if (map.getZoom() <= 15 && map.getZoom() >= 19) {
+                        layer_EcoLandParcels_4.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_EcoLandParcels_4.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+                if (map.hasLayer(layer_HabitatSurveyPlantlife_5)) {
+                    if (map.getZoom() <= 16 && map.getZoom() >= 19) {
+                        layer_HabitatSurveyPlantlife_5.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_HabitatSurveyPlantlife_5.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+                if (map.hasLayer(layer_PeatDepthcm_6)) {
+                    if (map.getZoom() <= 18 && map.getZoom() >= 19) {
+                        layer_PeatDepthcm_6.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_PeatDepthcm_6.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        });
+        setBounds();
+                if (map.hasLayer(layer_EcoLandParcels_4)) {
+                    if (map.getZoom() <= 15 && map.getZoom() >= 19) {
+                        layer_EcoLandParcels_4.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_EcoLandParcels_4.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+                if (map.hasLayer(layer_HabitatSurveyPlantlife_5)) {
+                    if (map.getZoom() <= 16 && map.getZoom() >= 19) {
+                        layer_HabitatSurveyPlantlife_5.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_HabitatSurveyPlantlife_5.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+                if (map.hasLayer(layer_PeatDepthcm_6)) {
+                    if (map.getZoom() <= 18 && map.getZoom() >= 19) {
+                        layer_PeatDepthcm_6.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_PeatDepthcm_6.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        resetLabels([layer_EcoLandParcels_4,layer_HabitatSurveyPlantlife_5,layer_PeatDepthcm_6]);
+        map.on("zoomend", function(){
+            resetLabels([layer_EcoLandParcels_4,layer_HabitatSurveyPlantlife_5,layer_PeatDepthcm_6]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_EcoLandParcels_4,layer_HabitatSurveyPlantlife_5,layer_PeatDepthcm_6]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_EcoLandParcels_4,layer_HabitatSurveyPlantlife_5,layer_PeatDepthcm_6]);
+        });
+        </script>
+    </body>
+</html>
